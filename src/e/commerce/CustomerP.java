@@ -4,6 +4,9 @@
  */
 package e.commerce;
 
+import java.awt.Color;
+import javax.swing.JLabel;
+
 /**
  *
  * @author dexte
@@ -36,6 +39,13 @@ public class CustomerP extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         ParentP = new javax.swing.JPanel();
         HomeP = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
         ShopP = new javax.swing.JPanel();
         ContactP = new javax.swing.JPanel();
 
@@ -54,6 +64,11 @@ public class CustomerP extends javax.swing.JFrame {
 
         Home.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         Home.setText("Home");
+        Home.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                HomeFocusGained(evt);
+            }
+        });
         Home.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 HomeMouseClicked(evt);
@@ -123,22 +138,83 @@ public class CustomerP extends javax.swing.JFrame {
         ParentP.setBackground(new java.awt.Color(240, 240, 240));
         ParentP.setLayout(new java.awt.CardLayout());
 
-        HomeP.setBackground(new java.awt.Color(153, 153, 153));
+        HomeP.setBackground(new java.awt.Color(240, 240, 240));
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setText("Latest Deals");
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 22)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(242, 92, 5));
+        jLabel4.setText("Unbeatable Offers ");
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("This Season");
+
+        jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel8.setText("Upgrade your lifestyle with top-quality products");
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel9.setText("designed for comfort and efficiency!");
+
+        jButton1.setBackground(new java.awt.Color(242, 92, 5));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Shop Now");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setBackground(new java.awt.Color(240, 240, 240));
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/handsome-freelance-hipster-man-sitting-floor-with-his-laptop-computer-bearded-man-glasses-smiling-looking-screen__1_-removebg-preview.png"))); // NOI18N
+        jLabel10.setText("jLabel10");
 
         javax.swing.GroupLayout HomePLayout = new javax.swing.GroupLayout(HomeP);
         HomeP.setLayout(HomePLayout);
         HomePLayout.setHorizontalGroup(
             HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
+            .addGroup(HomePLayout.createSequentialGroup()
+                .addGap(151, 151, 151)
+                .addGroup(HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel8)
+                    .addGroup(HomePLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5))
+                    .addComponent(jLabel9)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(70, 70, 70))
         );
         HomePLayout.setVerticalGroup(
             HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
+            .addGroup(HomePLayout.createSequentialGroup()
+                .addGap(147, 147, 147)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addGap(9, 9, 9)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomePLayout.createSequentialGroup()
+                .addContainerGap(48, Short.MAX_VALUE)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         ParentP.add(HomeP, "card2");
 
-        ShopP.setBackground(new java.awt.Color(204, 204, 204));
+        ShopP.setBackground(new java.awt.Color(0, 255, 255));
 
         javax.swing.GroupLayout ShopPLayout = new javax.swing.GroupLayout(ShopP);
         ShopP.setLayout(ShopPLayout);
@@ -148,7 +224,7 @@ public class CustomerP extends javax.swing.JFrame {
         );
         ShopPLayout.setVerticalGroup(
             ShopPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
 
         ParentP.add(ShopP, "card3");
@@ -163,17 +239,29 @@ public class CustomerP extends javax.swing.JFrame {
         );
         ContactPLayout.setVerticalGroup(
             ContactPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 529, Short.MAX_VALUE)
+            .addGap(0, 530, Short.MAX_VALUE)
         );
 
         ParentP.add(ContactP, "card4");
 
         getContentPane().add(ParentP, java.awt.BorderLayout.CENTER);
 
-        pack();
+        setSize(new java.awt.Dimension(1214, 607));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+  private JLabel lastClickedLabel = null;
+  // Method to update label colors
+private void updateLabelColor(JLabel clickedLabel) {
+    if (lastClickedLabel != null) {
+        lastClickedLabel.setForeground(Color.BLACK); // Reset previous label
+    }
+    
+    clickedLabel.setForeground(Color.RED); // Change clicked label to red
+    lastClickedLabel = clickedLabel; // Store as last clicked
+}
 
     private void HomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HomeMouseClicked
+        updateLabelColor(Home);
         ParentP.removeAll();
         ParentP.add(HomeP);
         ParentP.repaint();
@@ -181,6 +269,7 @@ public class CustomerP extends javax.swing.JFrame {
     }//GEN-LAST:event_HomeMouseClicked
 
     private void ShopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ShopMouseClicked
+        updateLabelColor(Shop);
         ParentP.removeAll();
         ParentP.add(ShopP);
         ParentP.repaint();
@@ -188,11 +277,23 @@ public class CustomerP extends javax.swing.JFrame {
     }//GEN-LAST:event_ShopMouseClicked
 
     private void ContactMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ContactMouseClicked
+        updateLabelColor(Contact);
         ParentP.removeAll();
         ParentP.add(ContactP);
         ParentP.repaint();
         ParentP.revalidate();
     }//GEN-LAST:event_ContactMouseClicked
+
+    private void HomeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_HomeFocusGained
+     
+    }//GEN-LAST:event_HomeFocusGained
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        ParentP.removeAll();
+        ParentP.add(ShopP);
+        ParentP.repaint();
+        ParentP.revalidate();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -238,10 +339,17 @@ public class CustomerP extends javax.swing.JFrame {
     private javax.swing.JPanel ParentP;
     private javax.swing.JLabel Shop;
     private javax.swing.JPanel ShopP;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
