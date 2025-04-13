@@ -4,6 +4,11 @@
  */
 package e.commerce;
 
+import java.sql.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+
 /**
  *
  * @author dexte
@@ -30,15 +35,15 @@ public class SignUp extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jCTextField1 = new app.bolivia.swing.JCTextField();
+        txtFN = new app.bolivia.swing.JCTextField();
         jLabel6 = new javax.swing.JLabel();
-        jCTextField2 = new app.bolivia.swing.JCTextField();
+        txtUN = new app.bolivia.swing.JCTextField();
         jLabel7 = new javax.swing.JLabel();
-        jCTextField3 = new app.bolivia.swing.JCTextField();
+        txtP = new app.bolivia.swing.JCTextField();
         jLabel8 = new javax.swing.JLabel();
-        jCTextField4 = new app.bolivia.swing.JCTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        txtCP = new app.bolivia.swing.JCTextField();
+        CBTsignup = new javax.swing.JComboBox<>();
+        signUpBTN = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -54,42 +59,68 @@ public class SignUp extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(242, 92, 5));
         jLabel3.setText("Sign Up");
 
-        jLabel4.setForeground(new java.awt.Color(96, 96, 96));
+        jLabel4.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Hello!! let's get started");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Full Name");
 
-        jCTextField1.setPlaceholder("Enter your full name");
+        txtFN.setBackground(new java.awt.Color(255, 255, 255));
+        txtFN.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtFN.setPlaceholder("Enter your full name");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Username ");
 
-        jCTextField2.setPlaceholder("Enter a username");
+        txtUN.setBackground(new java.awt.Color(255, 255, 255));
+        txtUN.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtUN.setPlaceholder("Enter a username");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Password");
 
-        jCTextField3.setPlaceholder("Enter a password");
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel8.setText("Confirm Password");
-
-        jCTextField4.setPlaceholder("Enter a password");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sign up as:", "Costumer", "Admin" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        txtP.setBackground(new java.awt.Color(255, 255, 255));
+        txtP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtP.setPlaceholder("Enter a password");
+        txtP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                txtPActionPerformed(evt);
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(242, 92, 5));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Sign Up");
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Confirm Password");
+
+        txtCP.setBackground(new java.awt.Color(255, 255, 255));
+        txtCP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtCP.setPlaceholder("Enter a password");
+
+        CBTsignup.setBackground(new java.awt.Color(204, 204, 204));
+        CBTsignup.setForeground(new java.awt.Color(0, 0, 0));
+        CBTsignup.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User Type", "CUSTOMER", "ADMIN" }));
+        CBTsignup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CBTsignupActionPerformed(evt);
+            }
+        });
+
+        signUpBTN.setBackground(new java.awt.Color(242, 92, 5));
+        signUpBTN.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        signUpBTN.setForeground(new java.awt.Color(255, 255, 255));
+        signUpBTN.setText("Sign Up");
+        signUpBTN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                signUpBTNActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Already have an account?");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -118,16 +149,16 @@ public class SignUp extends javax.swing.JFrame {
                 .addGap(0, 23, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jCTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                        .addComponent(signUpBTN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtFN, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtUN, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
                         .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jCTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                        .addComponent(txtP, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
                         .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jCTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtCP, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                        .addComponent(CBTsignup, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -144,28 +175,28 @@ public class SignUp extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtFN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtUN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtCP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(CBTsignup, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(signUpBTN)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jLabel10))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.LINE_START);
@@ -199,18 +230,99 @@ public class SignUp extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(178, Short.MAX_VALUE))
+                .addContainerGap(183, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
 
-        setSize(new java.awt.Dimension(714, 507));
+        pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    public void insertSignUPDetails(){
+    String fullName = txtFN.getText();
+    String username = txtUN.getText();
+    String password = txtP.getText();
+    String confirmPassword = txtCP.getText();
+    String selectedUserTypeStr = (String) CBTsignup.getSelectedItem(); // Get as String
+
+    
+    
+    try {
+        Connection con = DBConnection.getConnection();
+        
+        // VALIDATIONS
+        if (fullName.isEmpty() && username.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // String to Enum 
+        // Ensure valid selection BEFORE converting to Enum
+        if (selectedUserTypeStr == null || selectedUserTypeStr.equals("Select User Type")) {
+            JOptionPane.showMessageDialog(this, "Please select a valid user type", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Convert String to Enum safely
+        UserType selectedUserType = UserType.valueOf(selectedUserTypeStr.toUpperCase());
+
+        if (!password.equals(confirmPassword)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match");
+            return;
+        }
+        
+        if(fullName.equals("")){
+            JOptionPane.showMessageDialog(this, "Please enter full name");
+            return;
+        }else if(username.equals("")){
+            JOptionPane.showMessageDialog(this, "Please enter username");
+            return;
+        }else if(password.equals("")){
+            JOptionPane.showMessageDialog(this, "Please enter username");
+            return;
+        }
+        
+        // Check if username already exists
+        String checkQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
+        PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+        checkStmt.setString(1, username);
+        ResultSet rs = checkStmt.executeQuery();
+        
+        if (rs.next() && rs.getInt(1) > 0) {
+            JOptionPane.showMessageDialog(this, "Username already exists. Please choose another one.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // INSERT INTO DATABASE
+        String query = "INSERT INTO users (fullN, username, password, role) VALUES (?, ?, ?, ?)";
+        PreparedStatement pst = con.prepareStatement(query);
+        pst.setString(1, fullName);
+        pst.setString(2, username);
+        pst.setString(3, password); // Hashing the password
+        pst.setString(4, selectedUserType.name()); // Save Enum as String
+        
+        int rowsInserted = pst.executeUpdate();
+        if (rowsInserted > 0) {
+            JOptionPane.showMessageDialog(this, "User registered successfully!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Registration failed", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        // reset 
+        txtFN.setText("");
+        txtUN.setText("");
+        txtP.setText("");
+        txtCP.setText("");
+        CBTsignup.setSelectedItem("Select User Type");
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+     
+    }
+    private void CBTsignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CBTsignupActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_CBTsignupActionPerformed
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
        login li = new login();
@@ -219,6 +331,17 @@ public class SignUp extends javax.swing.JFrame {
        li.setLocationRelativeTo(null);
        this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
+
+    private void signUpBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpBTNActionPerformed
+    
+       insertSignUPDetails();
+     
+      
+    }//GEN-LAST:event_signUpBTNActionPerformed
+
+    private void txtPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPActionPerformed
 
     /**
      * @param args the command line arguments
@@ -256,12 +379,7 @@ public class SignUp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private app.bolivia.swing.JCTextField jCTextField1;
-    private app.bolivia.swing.JCTextField jCTextField2;
-    private app.bolivia.swing.JCTextField jCTextField3;
-    private app.bolivia.swing.JCTextField jCTextField4;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> CBTsignup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -274,5 +392,10 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JButton signUpBTN;
+    private app.bolivia.swing.JCTextField txtCP;
+    private app.bolivia.swing.JCTextField txtFN;
+    private app.bolivia.swing.JCTextField txtP;
+    private app.bolivia.swing.JCTextField txtUN;
     // End of variables declaration//GEN-END:variables
 }
