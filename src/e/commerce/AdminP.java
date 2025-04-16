@@ -56,7 +56,7 @@ public class AdminP extends javax.swing.JFrame {
         PiePlot piePlot =(PiePlot) piechart.getPlot();
       
        //changing pie chart blocks colors
-       piePlot.setSectionPaint("IPhone 5s", new Color(255,255,102));
+        piePlot.setSectionPaint("IPhone 5s", new Color(255,255,102));
         piePlot.setSectionPaint("SamSung Grand", new Color(102,255,102));
         piePlot.setSectionPaint("MotoG", new Color(255,102,153));
         piePlot.setSectionPaint("Nokia Lumia", new Color(0,204,204));
@@ -827,15 +827,15 @@ public void table(){
     }//GEN-LAST:event_jLabel30MouseClicked
 
     private void jLabel29MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel29MouseEntered
-         jPanel14.setBackground(new Color(242, 92, 5)); 
+        jPanel14.setBackground(new Color(242, 92, 5)); 
     }//GEN-LAST:event_jLabel29MouseEntered
 
     private void jLabel29MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel29MouseExited
-        jPanel14.setBackground(Color.WHITE); 
+       jPanel14.setBackground(Color.WHITE); 
     }//GEN-LAST:event_jLabel29MouseExited
 
     private void jLabel30MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel30MouseEntered
-        jPanel15.setBackground(new Color(242, 92, 5)); 
+       jPanel15.setBackground(new Color(242, 92, 5)); 
     }//GEN-LAST:event_jLabel30MouseEntered
 
     private void jLabel30MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel30MouseExited

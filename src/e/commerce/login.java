@@ -64,8 +64,11 @@ public class login extends javax.swing.JFrame {
                     AdminP admin = new AdminP();
                     admin.setVisible(true);
                 }else if("Customer".equals(selectedUserTypeStr)){
+                    int id = rs.getInt("user_id");
+                    Session.userId = id;
                     CustomerP customer = new CustomerP();
                     customer.setVisible(true);
+                   
                 }
                 
             }else {

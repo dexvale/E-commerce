@@ -11,6 +11,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -36,12 +37,13 @@ public class CustomerP extends javax.swing.JFrame {
     public CustomerP() {
         initComponents();
         loadProductsForCustomer();
+        updateCartCounter();
     }
 
     private void loadProductsForCustomer() {
      try {
         Connection con = DBConnection.getConnection();
-        String query = "SELECT name, price, image FROM products WHERE status = 'AVAILABLE'";
+        String query = "SELECT  product_id, name, price, image FROM products WHERE status = 'AVAILABLE'";
         PreparedStatement pst = con.prepareStatement(query);
         ResultSet rs = pst.executeQuery();
 
@@ -50,8 +52,9 @@ public class CustomerP extends javax.swing.JFrame {
         int productCount = 0;
 
         while (rs.next()) {
+            String productID = rs.getString("product_id");
             String name = rs.getString("name");
-            int price = rs.getInt("price");
+            double price = rs.getInt("price");
             String imagePath = rs.getString("image");
 
             // Load Image
@@ -89,12 +92,59 @@ public class CustomerP extends javax.swing.JFrame {
             btnAdd.setPreferredSize(new Dimension(100, 30));
 
             // You can attach a listener to btnAdd to add to cart here
-            
+             final String finalProductId = productID;
+
             btnAdd.addActionListener(new ActionListener(){
                 
                  public void actionPerformed(ActionEvent e) {
-                
                 System.out.println("button is click");
+                
+              
+                try{
+                    int userId = Session.userId;
+                    Connection con = DBConnection.getConnection();
+                    
+                    String checkQ = ("SELECT quantity FROM cart WHERE user_id = ? AND product_id = ?");
+                        PreparedStatement checkStmt = con.prepareStatement(checkQ);
+                        checkStmt.setInt(1, userId);
+                        checkStmt.setString(2, finalProductId);
+                        ResultSet checkRs = checkStmt.executeQuery();
+                        
+                         if (checkRs.next()) {
+                            // Already in cart - update quantity
+                            int currentQty = checkRs.getInt("quantity");
+                            String updateQuery = "UPDATE cart SET quantity = ? WHERE user_id = ? AND product_id = ?";
+                            PreparedStatement updateStmt = con.prepareStatement(updateQuery);
+                            updateStmt.setInt(1, currentQty + 1);
+                            updateStmt.setInt(2, userId);
+                            updateStmt.setString(3, finalProductId);
+                            updateStmt.executeUpdate();
+                            updateStmt.close();
+                            updateCartCounter();
+                        }else{
+                             // Not in cart - insert new row
+                            String insertQuery = "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
+                            PreparedStatement insertStmt = con.prepareStatement(insertQuery);
+                            insertStmt.setInt(1, userId);
+                            insertStmt.setString(2, finalProductId);
+                            insertStmt.setInt(3, 1);
+                            insertStmt.executeUpdate();
+                            insertStmt.close();
+                            updateCartCounter();
+                         }
+                        
+                         checkRs.close();
+                        checkStmt.close();
+                        con.close();
+
+                        JOptionPane.showMessageDialog(null, "Product added to cart!");
+                  
+                    
+                }catch(Exception E){
+                    E.printStackTrace();
+                }
+                
+                
             }
             });
             
@@ -125,6 +175,29 @@ public class CustomerP extends javax.swing.JFrame {
     } catch (Exception e) {
         e.printStackTrace();
     }
+}
+    public int getCartCount(int userId) {
+    int count = 0;
+    try {
+        Connection con = DBConnection.getConnection();
+        String sql = "SELECT SUM(quantity) FROM cart WHERE user_id = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setInt(1, userId);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+        rs.close();
+        pst.close();
+        con.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+    public void updateCartCounter() {
+    int cartItems = getCartCount(Session.userId);
+    cart.setText("" + cartItems + "");
 }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -158,13 +231,16 @@ public class CustomerP extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1200, 70));
         jPanel1.setRequestFocusEnabled(false);
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cart icon (1).png"))); // NOI18N
         jLabel1.setText("jLabel1");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(26, 6, 83, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(242, 92, 5));
         jLabel2.setText("Fake Store");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(115, 14, 132, -1));
 
         Home.setBackground(new java.awt.Color(0, 0, 0));
         Home.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -180,6 +256,7 @@ public class CustomerP extends javax.swing.JFrame {
                 HomeMouseClicked(evt);
             }
         });
+        jPanel1.add(Home, new org.netbeans.lib.awtextra.AbsoluteConstraints(741, 20, -1, -1));
 
         Shop.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         Shop.setForeground(new java.awt.Color(0, 0, 0));
@@ -189,6 +266,7 @@ public class CustomerP extends javax.swing.JFrame {
                 ShopMouseClicked(evt);
             }
         });
+        jPanel1.add(Shop, new org.netbeans.lib.awtextra.AbsoluteConstraints(842, 20, -1, -1));
 
         Contact.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         Contact.setForeground(new java.awt.Color(0, 0, 0));
@@ -198,6 +276,7 @@ public class CustomerP extends javax.swing.JFrame {
                 ContactMouseClicked(evt);
             }
         });
+        jPanel1.add(Contact, new org.netbeans.lib.awtextra.AbsoluteConstraints(926, 20, -1, -1));
 
         logout.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         logout.setForeground(new java.awt.Color(0, 0, 0));
@@ -207,50 +286,23 @@ public class CustomerP extends javax.swing.JFrame {
                 logoutMouseClicked(evt);
             }
         });
+        jPanel1.add(logout, new org.netbeans.lib.awtextra.AbsoluteConstraints(1033, 20, -1, -1));
 
+        cart.setForeground(new java.awt.Color(0, 0, 0));
         cart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/9025885_shopping_cart_icon (1).png"))); // NOI18N
-        cart.setText("jLabel7");
+        cart.setText("2");
         cart.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cartMouseClicked(evt);
             }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                cartMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                cartMouseExited(evt);
+            }
         });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 494, Short.MAX_VALUE)
-                .addComponent(Home)
-                .addGap(49, 49, 49)
-                .addComponent(Shop)
-                .addGap(40, 40, 40)
-                .addComponent(Contact)
-                .addGap(41, 41, 41)
-                .addComponent(logout)
-                .addGap(35, 35, 35)
-                .addComponent(cart, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(Home)
-                    .addComponent(Shop)
-                    .addComponent(Contact)
-                    .addComponent(logout)
-                    .addComponent(cart, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        jPanel1.add(cart, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 20, 67, 28));
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
 
@@ -308,12 +360,16 @@ public class CustomerP extends javax.swing.JFrame {
                         .addComponent(jLabel5))
                     .addComponent(jLabel9)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(70, 70, 70))
+                .addGap(92, 92, 92))
         );
         HomePLayout.setVerticalGroup(
             HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomePLayout.createSequentialGroup()
+                .addContainerGap(48, Short.MAX_VALUE)
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
             .addGroup(HomePLayout.createSequentialGroup()
                 .addGap(147, 147, 147)
                 .addComponent(jLabel3)
@@ -328,15 +384,23 @@ public class CustomerP extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomePLayout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
         );
 
         ParentP.add(HomeP, "card2");
 
         ShopP.setBackground(new java.awt.Color(0, 255, 255));
+
+        javax.swing.GroupLayout ShopPLayout = new javax.swing.GroupLayout(ShopP);
+        ShopP.setLayout(ShopPLayout);
+        ShopPLayout.setHorizontalGroup(
+            ShopPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 1200, Short.MAX_VALUE)
+        );
+        ShopPLayout.setVerticalGroup(
+            ShopPLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 530, Short.MAX_VALUE)
+        );
+
         ParentP.add(ShopP, "card3");
 
         ContactP.setBackground(new java.awt.Color(204, 102, 0));
@@ -374,6 +438,15 @@ private void updateLabelColor(JLabel clickedLabel) {
     
     clickedLabel.setForeground(Color.RED); // Change clicked label to red
     lastClickedLabel = clickedLabel; // Store as last clicked
+}
+private JPanel lastP;
+private void updateP(JPanel clikedP){
+    if (lastP != null) {
+        lastP.setBackground(Color.WHITE); // Reset previous label
+    }else{
+    clikedP.setBackground(Color.RED); // Change clicked label to red
+    lastP = clikedP; 
+    }
 }
 
     private void HomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HomeMouseClicked
@@ -442,49 +515,22 @@ private void updateLabelColor(JLabel clickedLabel) {
     }
     }//GEN-LAST:event_logoutMouseClicked
 
+    private void cartMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartMouseExited
+        // jPanel2.setBackground(Color.WHITE);
+    }//GEN-LAST:event_cartMouseExited
+
+    private void cartMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartMouseEntered
+        // jPanel2.setBackground(new Color(242, 92, 5));
+    }//GEN-LAST:event_cartMouseEntered
+
     private void cartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartMouseClicked
-       // updateLabelColor(cart);
-        
-        System.out.println("clicked");
-         JPanel card = new JPanel();
-    card.setPreferredSize(new Dimension(190, 220));
-    card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-    card.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-    
-    // Customize the background color
-    card.setBackground(new Color(240, 240, 240)); // Light gray background
+        //updateP(jPanel2);
+        updateLabelColor(cart);
+        Cart c = new Cart();
+        c.setBounds(1050, 180, 300, 530);
+        c.setVisible(true);
+        updateCartCounter();
 
-    // Add components to the card panel
-    JLabel itemLabel = new JLabel("Item Name");
-    itemLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the label
-    card.add(itemLabel);
-    
-    JButton btnRemove = new JButton("Remove");
-    btnRemove.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the button
-    btnRemove.setBackground(new Color(240, 0, 80)); // Custom button color
-    btnRemove.setForeground(Color.WHITE);
-    btnRemove.setFocusPainted(false);
-    btnRemove.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    
-    // Add action listener to the button
-    btnRemove.addActionListener(e -> {
-        System.out.println("Item removed from cart!");
-        // Logic to remove the item from the cart
-    });
-    
-    card.add(btnRemove);
-    
-    // Optionally, add some spacing between components
-    card.add(Box.createRigidArea(new Dimension(0, 10))); // Vertical space
-    
-   // JPanel parentPanel = new JPanel(); // Replace with your actual parent panel
-    ParentP.add(card);
-    
-    // Refresh the parent panel
-    ParentP.revalidate();
-    ParentP.repaint();
-
-    
     }//GEN-LAST:event_cartMouseClicked
 
     /**
