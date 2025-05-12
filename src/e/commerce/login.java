@@ -2,6 +2,7 @@ package e.commerce;
 
 import javax.swing.JOptionPane;
 import java.sql.*;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -19,68 +20,72 @@ public class login extends javax.swing.JFrame {
     public login() {
         initComponents();
     }
-    
-    public boolean validateLogin(){
+
+    public boolean validateLogin() {
         String userN = txtUN.getText();
         String pass = txtP.getText();
         String selectedUserTypeStr = (String) CBTlogin.getSelectedItem(); // Get as String
-        
-        if(userN.equals("")){
+
+        if (userN.equals("")) {
             JOptionPane.showMessageDialog(this, "Please enter username");
             return false;
-        }else if(pass.equals("")){
+        } else if (pass.equals("")) {
             JOptionPane.showMessageDialog(this, "Please enter a password");
             return false;
-        }else if (selectedUserTypeStr == null || selectedUserTypeStr.equals("Select User Type")) {
+        } else if (selectedUserTypeStr == null || selectedUserTypeStr.equals("Select User Type")) {
             JOptionPane.showMessageDialog(this, "Please select a valid user type", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
-        try{
-          UserType selectedUserType = UserType.valueOf(selectedUserTypeStr.toUpperCase());  
-        }catch(Exception e){
-             JOptionPane.showMessageDialog(this, "Invalid user type selected", "Error", JOptionPane.ERROR_MESSAGE);
-        return false;
+
+        try {
+            UserType selectedUserType = UserType.valueOf(selectedUserTypeStr.toUpperCase());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Invalid user type selected", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
         }
         return true;
     }
-    public void verifyLogin(){
+
+    public void verifyLogin() {
         String userN = txtUN.getText();
         String pass = txtP.getText();
         String selectedUserTypeStr = (String) CBTlogin.getSelectedItem();
-        
-        try{
+
+        try {
             Connection con = DBConnection.getConnection();
             PreparedStatement pst = con.prepareStatement("SELECT * FROM users where username = ? AND password = ? AND role = ?");
             pst.setString(1, userN);
             pst.setString(2, pass);
             pst.setString(3, selectedUserTypeStr);
-            
+
             ResultSet rs = pst.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 JOptionPane.showMessageDialog(this, "Log in succesful");
-                
-                if("Admin".equals(selectedUserTypeStr)){
+
+                if ("Admin".equals(selectedUserTypeStr)) {
                     AdminP admin = new AdminP();
                     admin.setVisible(true);
-                }else if("Customer".equals(selectedUserTypeStr)){
+                    this.dispose();
+                } else if ("Customer".equals(selectedUserTypeStr)) {
                     int id = rs.getInt("user_id");
                     Session.userId = id;
                     CustomerP customer = new CustomerP();
                     customer.setVisible(true);
-                   
+                    this.dispose();
+
                 }
-                
-            }else {
-            // Incorrect username, password, or user type
-            JOptionPane.showMessageDialog(this, "Invalid username, password, or user type", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-            
-        }catch(Exception e){
+
+            } else {
+                // Incorrect username, password, or user type
+                JOptionPane.showMessageDialog(this, "Invalid username, password, or user type", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
-    }  
+
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -133,11 +138,10 @@ public class login extends javax.swing.JFrame {
         loginBTN = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        hide = new javax.swing.JLabel();
-        show = new javax.swing.JLabel();
         txtP = new javax.swing.JPasswordField();
         CBTlogin = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -173,7 +177,7 @@ public class login extends javax.swing.JFrame {
         jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 103, 63, -1));
 
         txtUN.setBackground(new java.awt.Color(255, 255, 255));
-        txtUN.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtUN.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtUN.setPlaceholder("Enter a username");
         txtUN.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -196,13 +200,13 @@ public class login extends javax.swing.JFrame {
                 loginBTNActionPerformed(evt);
             }
         });
-        jPanel2.add(loginBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 297, 256, -1));
+        jPanel2.add(loginBTN, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 310, 256, -1));
 
         jLabel6.setBackground(new java.awt.Color(0, 0, 0));
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Don't  have an account ?");
-        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, -1, -1));
+        jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 350, -1, -1));
 
         jLabel7.setBackground(new java.awt.Color(242, 92, 5));
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
@@ -213,33 +217,17 @@ public class login extends javax.swing.JFrame {
                 jLabel7MouseClicked(evt);
             }
         });
-        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 340, 59, -1));
-
-        hide.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/hide (1).png"))); // NOI18N
-        hide.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                hideMouseClicked(evt);
-            }
-        });
-        jPanel2.add(hide, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, 30, 30));
-
-        show.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/show (1) (1).png"))); // NOI18N
-        show.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                showMouseClicked(evt);
-            }
-        });
-        jPanel2.add(show, new org.netbeans.lib.awtextra.AbsoluteConstraints(258, 200, 30, 30));
+        jPanel2.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 350, 59, -1));
 
         txtP.setBackground(new java.awt.Color(255, 255, 255));
         txtP.setForeground(new java.awt.Color(0, 0, 0));
-        txtP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtP.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         jPanel2.add(txtP, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 197, 256, 32));
 
         CBTlogin.setBackground(new java.awt.Color(204, 204, 204));
         CBTlogin.setForeground(new java.awt.Color(0, 0, 0));
         CBTlogin.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select User Type", "Customer", "Admin" }));
-        jPanel2.add(CBTlogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(35, 247, 256, 32));
+        jPanel2.add(CBTlogin, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 256, 32));
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -256,6 +244,16 @@ public class login extends javax.swing.JFrame {
 
         jPanel2.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 280, 40, 40));
 
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jCheckBox1.setForeground(new java.awt.Color(0, 0, 0));
+        jCheckBox1.setText("Show Password");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jCheckBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 240, 110, 20));
+
         getContentPane().add(jPanel2, java.awt.BorderLayout.CENTER);
 
         pack();
@@ -267,39 +265,34 @@ public class login extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUNActionPerformed
 
     private void jLabel7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel7MouseClicked
-       SignUp su = new SignUp();
-       su.setVisible(true);
-       su.pack();
-       su.setLocationRelativeTo(null);
-       this.dispose();
+        SignUp su = new SignUp();
+        su.setVisible(true);
+        su.pack();
+        su.setLocationRelativeTo(null);
+        this.dispose();
     }//GEN-LAST:event_jLabel7MouseClicked
 
     private void loginBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBTNActionPerformed
         validateLogin();
         verifyLogin();
-        
+
     }//GEN-LAST:event_loginBTNActionPerformed
 
-    private void hideMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hideMouseClicked
-        show.setVisible(true);
-        hide.setVisible(false);
-        txtP.setEchoChar((char)0);
-    }//GEN-LAST:event_hideMouseClicked
-
-    private void showMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_showMouseClicked
-        show.setVisible(false);
-        hide.setVisible(true);
-        txtP.setEchoChar('*');
-    }//GEN-LAST:event_showMouseClicked
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        if (jCheckBox1.isSelected()) {
+            txtP.setEchoChar((char) 0); // Show password
+        } else {
+            txtP.setEchoChar('*'); // Hide password
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> CBTlogin;
-    private javax.swing.JLabel hide;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -311,7 +304,6 @@ public class login extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JButton loginBTN;
-    private javax.swing.JLabel show;
     private javax.swing.JPasswordField txtP;
     private app.bolivia.swing.JCTextField txtUN;
     // End of variables declaration//GEN-END:variables

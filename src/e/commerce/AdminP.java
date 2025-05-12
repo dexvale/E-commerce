@@ -918,6 +918,20 @@ public void table(){
 
     try {
         Connection con = DBConnection.getConnection();
+        // Check for duplicate product ID
+        String checkQuery = "SELECT product_id FROM products WHERE product_id = ?";
+        PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+        checkStmt.setString(1, productid);
+        ResultSet rs = checkStmt.executeQuery();
+        if (rs.next()) {
+            JOptionPane.showMessageDialog(this, "Product ID already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            rs.close();
+            checkStmt.close();
+            con.close();
+            return;
+        }
+        rs.close();
+        checkStmt.close();
 
         // Validate image selection
         if (selectedImagePath == null || selectedImagePath.isEmpty()) {

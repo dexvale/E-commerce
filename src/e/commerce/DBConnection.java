@@ -20,7 +20,7 @@ public class DBConnection {
             if (con == null || con.isClosed()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 con = DriverManager.getConnection(sUrl, sUser, sPass);
-                System.out.println("Database Connected Successfully.");
+               // System.out.println("Database Connected Successfully.");
             }
         } catch (Exception e) {
             e.printStackTrace(); // Print error details

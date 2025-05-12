@@ -39,6 +39,12 @@ public class CustomerP extends javax.swing.JFrame {
         loadProductsForCustomer();
         updateCartCounter();
     }
+    
+     private void openCartWindow() {
+        Cart cartWindow = new Cart();
+        cartWindow.setCustomerP(this); // 👈 Important line
+        cartWindow.setVisible(true);
+    }
 
     private void loadProductsForCustomer() {
      try {
@@ -97,7 +103,7 @@ public class CustomerP extends javax.swing.JFrame {
             btnAdd.addActionListener(new ActionListener(){
                 
                  public void actionPerformed(ActionEvent e) {
-                System.out.println("button is click");
+               // System.out.println("button is click");
                 
               
                 try{
@@ -367,7 +373,7 @@ public class CustomerP extends javax.swing.JFrame {
         HomePLayout.setVerticalGroup(
             HomePLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomePLayout.createSequentialGroup()
-                .addContainerGap(48, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33))
             .addGroup(HomePLayout.createSequentialGroup()
@@ -524,12 +530,17 @@ private void updateP(JPanel clikedP){
     }//GEN-LAST:event_cartMouseEntered
 
     private void cartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartMouseClicked
-        //updateP(jPanel2);
+        
         updateLabelColor(cart);
-        Cart c = new Cart();
-        c.setBounds(1050, 180, 300, 530);
+        NewCart c = new NewCart(this, true);
+     
+        c.setBounds(971, 180, 400, 530);
         c.setVisible(true);
+        
+        
+        
         updateCartCounter();
+        
 
     }//GEN-LAST:event_cartMouseClicked
 

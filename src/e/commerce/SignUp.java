@@ -7,7 +7,10 @@ package e.commerce;
 import java.sql.*;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
 
 /**
  *
@@ -68,7 +71,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel5.setText("Full Name");
 
         txtFN.setBackground(new java.awt.Color(255, 255, 255));
-        txtFN.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtFN.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtFN.setPlaceholder("Enter your full name");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -76,7 +79,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel6.setText("Username ");
 
         txtUN.setBackground(new java.awt.Color(255, 255, 255));
-        txtUN.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtUN.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtUN.setPlaceholder("Enter a username");
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -84,7 +87,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel7.setText("Password");
 
         txtP.setBackground(new java.awt.Color(255, 255, 255));
-        txtP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtP.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtP.setPlaceholder("Enter a password");
         txtP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -97,7 +100,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel8.setText("Confirm Password");
 
         txtCP.setBackground(new java.awt.Color(255, 255, 255));
-        txtCP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        txtCP.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
         txtCP.setPlaceholder("Enter a password");
 
         CBTsignup.setBackground(new java.awt.Color(204, 204, 204));
@@ -239,104 +242,115 @@ public class SignUp extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    public void insertSignUPDetails(){
-    String fullName = txtFN.getText();
-    String username = txtUN.getText();
-    String password = txtP.getText();
-    String confirmPassword = txtCP.getText();
-    String selectedUserTypeStr = (String) CBTsignup.getSelectedItem(); // Get as String
+    public void insertSignUPDetails() {
+        String fullName = txtFN.getText();
+        String username = txtUN.getText();
+        String password = txtP.getText();
+        String confirmPassword = txtCP.getText();
+        String selectedUserTypeStr = (String) CBTsignup.getSelectedItem(); // Get as String
 
-    
-    
-    try {
-        Connection con = DBConnection.getConnection();
-        
-        // VALIDATIONS
-        if (fullName.isEmpty() && username.isEmpty() && password.isEmpty() && confirmPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill all required fields", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // String to Enum 
-        // Ensure valid selection BEFORE converting to Enum
-        if (selectedUserTypeStr == null || selectedUserTypeStr.equals("Select User Type")) {
-            JOptionPane.showMessageDialog(this, "Please select a valid user type", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+        try {
+            Connection con = DBConnection.getConnection();
+
+            // VALIDATIONS
+            txtFN.setBorder(new JTextField().getBorder());
+            txtUN.setBorder(new JTextField().getBorder());
+            txtP.setBorder(new JTextField().getBorder());
+            txtCP.setBorder(new JTextField().getBorder());
+            CBTsignup.setBorder(UIManager.getBorder("ComboBox.border")); // Reset for combo box
+
+            boolean hasError = false;
+            if (fullName.isEmpty()) {
+                txtFN.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+            }
+            if (username.isEmpty()) {
+                txtUN.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+            }
+            if (password.isEmpty()) {
+                txtP.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+            }
+            if (confirmPassword.isEmpty()) {
+                txtCP.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+            }
+            if (selectedUserTypeStr == null || selectedUserTypeStr.equals("Select User Type")) {
+                CBTsignup.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                txtP.setBorder(new LineBorder(Color.RED, 2));
+                txtCP.setBorder(new LineBorder(Color.RED, 2));
+                hasError = true;
+               
+            }
+
+            if (hasError) {
+                JOptionPane.showMessageDialog(this, "Please fill all required fields", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Convert String to Enum safely
+            UserType selectedUserType = UserType.valueOf(selectedUserTypeStr.toUpperCase());
+
+            // Check if username already exists
+            String checkQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
+            PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+            checkStmt.setString(1, username);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                JOptionPane.showMessageDialog(this, "Username already exists. Please choose another one.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // INSERT INTO DATABASE
+            String query = "INSERT INTO users (fullN, username, password, role) VALUES (?, ?, ?, ?)";
+            
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.setString(1, fullName);
+            pst.setString(2, username);
+            pst.setString(3, password); // Hashing the password
+            pst.setString(4, selectedUserType.name()); // Save Enum as String
+
+            int rowsInserted = pst.executeUpdate();
+            if (rowsInserted > 0) {
+                JOptionPane.showMessageDialog(this, "User registered successfully!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Registration failed", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            // reset 
+            txtFN.setText("");
+            txtUN.setText("");
+            txtP.setText("");
+            txtCP.setText("");
+            CBTsignup.setSelectedItem("Select User Type");
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        // Convert String to Enum safely
-        UserType selectedUserType = UserType.valueOf(selectedUserTypeStr.toUpperCase());
-
-        if (!password.equals(confirmPassword)) {
-            JOptionPane.showMessageDialog(this, "Passwords do not match");
-            return;
-        }
-        
-        if(fullName.equals("")){
-            JOptionPane.showMessageDialog(this, "Please enter full name");
-            return;
-        }else if(username.equals("")){
-            JOptionPane.showMessageDialog(this, "Please enter username");
-            return;
-        }else if(password.equals("")){
-            JOptionPane.showMessageDialog(this, "Please enter username");
-            return;
-        }
-        
-        // Check if username already exists
-        String checkQuery = "SELECT COUNT(*) FROM users WHERE username = ?";
-        PreparedStatement checkStmt = con.prepareStatement(checkQuery);
-        checkStmt.setString(1, username);
-        ResultSet rs = checkStmt.executeQuery();
-        
-        if (rs.next() && rs.getInt(1) > 0) {
-            JOptionPane.showMessageDialog(this, "Username already exists. Please choose another one.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // INSERT INTO DATABASE
-        String query = "INSERT INTO users (fullN, username, password, role) VALUES (?, ?, ?, ?)";
-        PreparedStatement pst = con.prepareStatement(query);
-        pst.setString(1, fullName);
-        pst.setString(2, username);
-        pst.setString(3, password); // Hashing the password
-        pst.setString(4, selectedUserType.name()); // Save Enum as String
-        
-        int rowsInserted = pst.executeUpdate();
-        if (rowsInserted > 0) {
-            JOptionPane.showMessageDialog(this, "User registered successfully!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Registration failed", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        // reset 
-        txtFN.setText("");
-        txtUN.setText("");
-        txtP.setText("");
-        txtCP.setText("");
-        CBTsignup.setSelectedItem("Select User Type");
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-     
     }
     private void CBTsignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CBTsignupActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_CBTsignupActionPerformed
 
     private void jLabel10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel10MouseClicked
-       login li = new login();
-       li.setVisible(true);
-       li.pack();
-       li.setLocationRelativeTo(null);
-       this.dispose();
+        login li = new login();
+        li.setVisible(true);
+        li.pack();
+        li.setLocationRelativeTo(null);
+        this.dispose();
     }//GEN-LAST:event_jLabel10MouseClicked
 
     private void signUpBTNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpBTNActionPerformed
-    
-       insertSignUPDetails();
-     
-      
+
+        insertSignUPDetails();
+
+
     }//GEN-LAST:event_signUpBTNActionPerformed
 
     private void txtPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPActionPerformed
